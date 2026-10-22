@@ -1,0 +1,57 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Runtime and private storage
+/storage/logs/*
+/storage/sessions/*
+/storage/uploads/*
+/storage/cache/*
+/backups/*
+/public/uploads/*
+*.log
+
+# Local database dumps and exports
+*.sql
+!/database/migrations/*.sql
+*.sql.gz
+*.dump
+/database/dumps/*
+
+# Private credentials, local state and generated packages
+*.pem
+*.key
+*.p12
+*.pfx
+*.cookie
+*.cookies
+*.cookies.txt
+*.session
+sess_*
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.bak
+*.backup
+/.cache/
+/coverage/
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+
+# Dependency and build output (not used by this framework-free app)
+/vendor/
+/node_modules/
+/dist/
+
+# Local agent handoffs and complete original-history backups
+/.agent-handoff/
+*.bundle

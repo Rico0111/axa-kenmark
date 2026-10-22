@@ -1,0 +1,47 @@
+# AXA-Kenneth public document root
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+
+<IfModule mod_headers.c>
+  # Use setifempty so the dynamic headers from PHP are not duplicated.
+  Header setifempty X-Content-Type-Options "nosniff"
+  Header setifempty X-Frame-Options "DENY"
+  Header setifempty Referrer-Policy "strict-origin-when-cross-origin"
+  Header setifempty Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+  Header unset X-Powered-By
+</IfModule>
+
+<FilesMatch "(core-path\.php|^\.|\.(env|ini|log|sql|bak|sh|bat|cmd|ps1|example))$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # External requests must use canonical app URLs, never the physical public/ path.
+  # THE_REQUEST stays unchanged for internal root rewrites.
+  RewriteCond %{THE_REQUEST} \s/+(?:[^?\s]*/)?public(?:[/\s?]) [NC]
+  RewriteRule ^ - [F,END]
+
+  # Block all HTTP access to private application code, data, logs, and scripts
+  RewriteRule ^private(/.*)?$ - [F,L,NC]
+
+  # Block access to hidden files and common private-file extensions.
+  RewriteRule "(^|/)\.(?!well-known/)" - [F,L]
+  RewriteRule "\.(env|ini|log|sql|bak|sh|bat|cmd|ps1|example)$" - [F,L,NC]
+
+  # Block directory traversal attempts (encoded or raw)
+  RewriteCond %{THE_REQUEST} (\.\./|%2e%2e/|%2e%2e%2f|%2E%2E/|%2E%2E%2F) [NC]
+  RewriteRule ^ - [F,L]
+
+  # Serve existing public files and directories (assets, admin entry point) directly.
+  # Ensure private directory is strictly excluded even if matched on the filesystem.
+  RewriteCond %{REQUEST_URI} !^/axa-kenmark/private(/.*)?$ [NC]
+  RewriteCond %{REQUEST_URI} !^/private(/.*)?$ [NC]
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Public routes are handled by the front controller.
+  RewriteRule ^ index.php [L]
+</IfModule>

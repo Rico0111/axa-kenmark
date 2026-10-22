@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Optional Private Core Directory Locator
+ *
+ * By default, AXA-Kenneth automatically locates the private application core at:
+ *   dirname(__DIR__, 2) . '/axa-kenmark-core' (Hostinger standard layout)
+ * or:
+ *   dirname(__DIR__) . '/app' (Local monolithic layout)
+ *
+ * If you rename the core directory or place it elsewhere on Hostinger, copy this file
+ * to 'core-path.php' and return the absolute or relative path to that directory:
+ *
+ * Example:
+ *   return '/home/u123456789/axa-kenmark-core';
+ */
+
+return dirname(__DIR__, 2) . '/axa-kenmark-core';
