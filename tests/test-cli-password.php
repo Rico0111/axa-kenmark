@@ -179,6 +179,7 @@ runTest('reset-admin-password.php rejects empty password', function () use ($php
 });
 
 // 10. Execution via Windows CMD
+if (PHP_OS_FAMILY === 'Windows') {
 runTest('Execution compatible with Windows CMD', function () use ($phpBinary, $fixtureId, $fixtureEmail) {
     $cmd = "cmd.exe /c \"\"{$phpBinary}\" scripts/reset-admin-password.php 99999\"";
     $res = runCliProcess($cmd);
@@ -203,6 +204,9 @@ runTest('Execution compatible with PowerShell', function () use ($phpBinary, $fi
 });
 
 // 12. Password reset for temporary administrator with authentication verification
+} else {
+    echo "SKIP: Windows CMD and PowerShell compatibility checks require Windows.\n";
+}
 runTest('Reset temporary administrator password & verify login', function () use ($phpBinary, $fixtureId, $fixtureEmail) {
     $adminRepo = new AdminRepository();
     $adminBefore = $adminRepo->findById($fixtureId);

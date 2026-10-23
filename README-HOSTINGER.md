@@ -1,6 +1,8 @@
 # AXA-Kenneth: original-layout Hostinger installation
 
 This guide supersedes older `private/` and split-package handoff instructions.
+For the optional, manually triggered Hostinger 2 SFTP workflow, approval gates,
+staging, backups and non-destructive rollback, see `docs/hostinger-actions.md`.
 Use only `dist/hostinger/axa-kenmark-localhost-copy.zip`. Nothing is deployed
 automatically. The main website and its root configuration must stay unchanged.
 

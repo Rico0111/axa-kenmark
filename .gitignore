@@ -52,6 +52,10 @@ desktop.ini
 /node_modules/
 /dist/
 
+# Python deployment tooling
+__pycache__/
+*.pyc
+
 # Local agent handoffs and complete original-history backups
 /.agent-handoff/
 *.bundle

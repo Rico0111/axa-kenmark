@@ -135,8 +135,8 @@ async function main() {
     }
 
     // Sustained scrolling, idle restore, keyboard focus and admin editing.
-    for (const kind of ['public', 'admin']) {
-      const { page, context } = await pageFor(390, 'no-preference');
+    for (const width of widths.filter(value => value <= 768)) for (const kind of ['public', 'admin']) {
+      const { page, context } = await pageFor(width, 'no-preference');
       await page.goto(`http://127.0.0.1:8837/axa-kenmark/${kind === 'admin' ? 'admin/?r=dashboard' : ''}`, { waitUntil: 'networkidle' });
       await page.waitForFunction(() => !document.getElementById('axa-loader'));
       await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; });
@@ -149,17 +149,34 @@ async function main() {
         for (let y = 100; y <= 500; y += 50) { scrollTo(0, y); await wait(45); }
         const hidden = nav.classList.contains('nav-is-scrolling');
         const hiddenY = nav.querySelector('[data-nav-header]').getBoundingClientRect().y;
+        const hiddenOpacity = getComputedStyle(nav.querySelector('[data-nav-header]')).opacity;
         await wait(100);
         const earlyHidden = nav.classList.contains('nav-is-scrolling');
         await wait(450);
-        return { hidden, hiddenY, earlyHidden, restored: !nav.classList.contains('nav-is-scrolling'),
-          restoredY: nav.querySelector('[data-nav-header]').getBoundingClientRect().y };
+        const restored = !nav.classList.contains('nav-is-scrolling');
+        const restoredY = nav.querySelector('[data-nav-header]').getBoundingClientRect().y;
+        for (let y = 450; y >= 200; y -= 50) { scrollTo(0, y); await wait(45); }
+        const upHidden = nav.classList.contains('nav-is-scrolling');
+        await wait(600);
+        const upRestored = !nav.classList.contains('nav-is-scrolling');
+        scrollTo(0, 0); await wait(260);
+        const topVisible = !nav.classList.contains('nav-is-scrolling') && getComputedStyle(nav.querySelector('[data-nav-header]')).opacity === '1';
+        return { hidden, hiddenY, hiddenOpacity, earlyHidden, restored, restoredY, upHidden, upRestored, topVisible };
       });
       check(timing.hidden, `${kind}: hide during active scroll`);
       check(timing.hiddenY < -60, `${kind}: slides upward`);
       check(timing.earlyHidden, `${kind}: no premature idle restore`);
       check(timing.restored, `${kind}: restores after approximately 300ms`);
       check(Math.abs(timing.restoredY) < 1, `${kind}: restored at viewport top`);
+      check(Number(timing.hiddenOpacity) < .05, `${kind}-${width}: fades out`);
+      check(timing.upHidden && timing.upRestored, `${kind}-${width}: upward scrolling hides and idle restores`);
+      check(timing.topVisible, `${kind}-${width}: page top always visible`);
+      await nav.locator('[data-nav-toggle]').click();
+      await nav.locator('[data-nav-toggle]').click();
+      await page.evaluate(() => scrollTo(0, 500)); await page.waitForTimeout(70);
+      check(await nav.evaluate(el => el.classList.contains('nav-is-scrolling')), `${kind}-${width}: pointer menu dismissal does not pin header`);
+      await page.waitForTimeout(600);
+      await page.keyboard.press('Tab');
       await nav.locator('[data-nav-toggle]').focus();
       await page.evaluate(() => scrollBy(0, 100)); await page.waitForTimeout(50);
       check(!await nav.evaluate(el => el.classList.contains('nav-is-scrolling')), `${kind}: keyboard focus pins header`);

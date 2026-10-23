@@ -594,7 +594,9 @@ try {
     check('9.7 GET /sitemap.xml returns 200 XML', $sitemapRes['code'] === 200 && str_contains($sitemapRes['headers'], 'application/xml'));
 
     $robotsRes = curlRequest("{$base}/robots.txt");
-    check('9.8 GET /robots.txt returns 200 text', $robotsRes['code'] === 200 && str_contains($robotsRes['body'], 'Disallow: ' . \AxaKenneth\Support\Http::basePath() . '/admin/'));
+    // CLI SCRIPT_NAME points to tests/, not the HTTP application base path.
+    $robotsBase = rtrim((string) (parse_url($base, PHP_URL_PATH) ?? ''), '/');
+    check('9.8 GET /robots.txt returns 200 text', $robotsRes['code'] === 200 && str_contains($robotsRes['body'], 'Disallow: ' . $robotsBase . '/admin/'));
 
     // ---------------------------------------------------------
     // SECTION 10: ERROR HANDLING (4 checks)
