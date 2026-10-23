@@ -1,5 +1,28 @@
 # AXA-Kenneth responsive navigation — local review and handoff
 
+## Scroll animation follow-up
+
+The shared public/admin header now slides upward and fades out during scrolling
+in either direction at widths up to 768px, then slides/fades back after 300ms idle.
+Menu layout remains unchanged through its existing 900px breakpoint. A pointer
+click leaving focus on the closed menu toggle no longer pins the header; actual
+keyboard focus, an open menu and admin editing/critical controls still pin it.
+Top-of-page visibility and reduced-motion behavior are preserved. Pending timers
+and animation frames are cancelled on pagehide and the header is restored.
+
+Validation: **616 browser assertions passed**, including downward/upward motion,
+fade, idle restoration, page-top visibility and pointer-dismissal regression tests
+for both interfaces at 320, 375, 390, 408, 430, 640 and 768px. The complete suite
+also retained all 33 passing axe audits and zero console/page/resource errors.
+Both PHP layouts linted; JavaScript/CSS syntax and whitespace checks passed.
+All tests used static synthetic fixtures, without database/authentication changes.
+
+Follow-up files: `public/assets/css/navigation.css`,
+`public/assets/js/navigation.js`, `tests/navigation/test-navigation.cjs`, this
+report and the local ignored handoff. The original redesign report below is a
+historical checkpoint. The user's subsequent scoped commit/push authorization
+applies to this follow-up; no production deployment is authorized.
+
 Status: **PASS for local navigation implementation and validation. Not deployed.**
 No commit, push, pull request, database mutation, Hostinger/CDN change or production
 deployment was performed. Existing unrelated working-tree changes were preserved.

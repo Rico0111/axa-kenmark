@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const mobile = window.matchMedia('(max-width: 900px)');
+  const scrollMotion = window.matchMedia('(max-width: 768px)');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const focusable = 'a[href], button:not([disabled]), input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -23,7 +24,7 @@
     const showHeader = () => root.classList.remove('nav-is-scrolling');
     const editable = element => element instanceof HTMLElement &&
       (element.matches('input:not([type="hidden"]), textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"]') || element.isContentEditable);
-    const pinned = () => opened || root.contains(document.activeElement) ||
+    const pinned = () => opened || (root.contains(document.activeElement) && document.activeElement.matches(':focus-visible')) ||
       (isAdmin && (editing || pointerActive || editable(document.activeElement) ||
         document.activeElement?.closest('form, [role="dialog"], dialog[open]')));
     const visibleControls = () => [...root.querySelectorAll(focusable)].filter(el =>
@@ -144,7 +145,7 @@
       const moved = Math.abs(y - lastY) > 1;
       lastY = y;
       if (!frame) frame = requestAnimationFrame(() => { updateCurrentSection(); frame = 0; });
-      if (!mobile.matches || !moved) return;
+      if (!scrollMotion.matches || !moved) return;
       clearTimeout(restoreTimer);
       // Reduced motion keeps the header visible instead of jumping it offscreen.
       root.classList.toggle('nav-is-scrolling', y > 80 && !pinned() && !reduced.matches);
@@ -167,6 +168,14 @@
     }
     mobile.addEventListener('change', syncViewport);
     reduced.addEventListener('change', showHeader);
+    scrollMotion.addEventListener('change', showHeader);
+    window.addEventListener('pagehide', () => {
+      clearTimeout(restoreTimer);
+      cancelAnimationFrame(frame);
+      frame = 0;
+      pointerActive = false;
+      showHeader();
+    });
     window.addEventListener('pageshow', syncViewport);
     root.classList.add('nav-ready');
     if (isAdmin) panel.querySelector('.admin-nav-link.is-active')?.setAttribute('aria-current', 'page');
