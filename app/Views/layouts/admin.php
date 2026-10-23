@@ -24,6 +24,15 @@ $isSuperAdmin = $admin !== null && (string) ($admin['role'] ?? '') === 'super_ad
   <title><?= e($pageTitle) ?> · AXA-Kenneth Administration</title>
   <link rel="icon" type="image/x-icon" href="<?= e(url('favicon.ico')) ?>">
   <link rel="stylesheet" href="<?= e(asset('css/admin.css')) ?>">
+  <link rel="stylesheet" href="<?= e(asset('css/navigation.css')) ?>">
+  <noscript>
+    <style>
+      @media (max-width: 900px) {
+        .admin-navigation:not(.nav-ready) { height: auto; }
+        .admin-navigation .admin-sidebar { display: flex; }
+      }
+    </style>
+  </noscript>
 </head>
 <body class="admin-body">
 <a class="admin-skip-link" href="#admin-content">Skip to administration content</a>
@@ -46,7 +55,23 @@ $isSuperAdmin = $admin !== null && (string) ($admin['role'] ?? '') === 'super_ad
   </main>
 <?php else: ?>
   <div class="admin-shell">
-    <aside class="admin-sidebar" aria-label="Sidebar">
+    <div class="admin-navigation" data-navigation data-nav-kind="admin">
+      <header class="admin-mobile-header" data-nav-header>
+        <a class="admin-brand" href="<?= e(admin_url('dashboard')) ?>" aria-label="Administration dashboard">
+          <span class="admin-brand-mark" aria-hidden="true">AXA</span>
+          <span class="admin-brand-divider" aria-hidden="true"></span>
+          <span class="admin-brand-caption">KENNETH<br>ADMINISTRATION</span>
+        </a>
+        <button class="nav-toggle" type="button" data-nav-toggle aria-controls="admin-navigation-panel" aria-expanded="false" aria-label="Open administration navigation" hidden>
+          <span class="nav-toggle-icon" aria-hidden="true"><span></span><span></span></span><span class="nav-toggle-label">Menu</span>
+        </button>
+      </header>
+      <button class="nav-backdrop" type="button" data-nav-backdrop aria-label="Close administration navigation" tabindex="-1" hidden></button>
+    <aside class="admin-sidebar" id="admin-navigation-panel" data-nav-panel aria-label="Administration menu">
+      <div class="admin-drawer-heading">
+        <p class="nav-panel-eyebrow">YOUR WORKSPACE</p>
+        <h2>Administration</h2>
+      </div>
       <a class="admin-brand" href="<?= e(admin_url('dashboard')) ?>" aria-label="Administration dashboard">
         <span class="admin-brand-mark" aria-hidden="true">AXA</span>
         <span class="admin-brand-divider" aria-hidden="true"></span>
@@ -81,6 +106,7 @@ $isSuperAdmin = $admin !== null && (string) ($admin['role'] ?? '') === 'super_ad
         </form>
       </div>
     </aside>
+    </div>
 
     <div class="admin-main">
       <header class="admin-topbar">
@@ -110,5 +136,6 @@ $isSuperAdmin = $admin !== null && (string) ($admin['role'] ?? '') === 'super_ad
 <?php endif; ?>
 
 <script src="<?= e(asset('js/admin.js')) ?>" defer></script>
+<script src="<?= e(asset('js/navigation.js')) ?>" defer></script>
 </body>
 </html>
