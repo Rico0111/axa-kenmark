@@ -8,7 +8,9 @@ provisioning credentials and password hashes.
 
 The application retains its original app/, config/, database/, docs/, public/,
 scripts/, storage/ and tests/ hierarchy. See README.md for development and
-README-HOSTINGER.md for manual deployment. No Hostinger deployment is automated.
+README-HOSTINGER.md for manual deployment. The optional GitHub Actions SFTP
+workflow is manual-only; see docs/hostinger-actions.md. Production requires
+explicit approval and environment configuration before it can run.
 The earlier Hostinger audit describes observed production failures; publishing
 this source does not establish production readiness.
 

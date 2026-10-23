@@ -37,7 +37,7 @@ foreach (['app', 'config', 'database', 'docs', 'public', 'scripts', 'storage', '
     foreach ($iterator as $file) {
         $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
         $storageRuntime = $directory === 'storage' && $file->getFilename() !== '.htaccess';
-        $unsafe = preg_match('~(^|/)(dumps?|backups?|node_modules|vendor|\.git)(/|$)|(^|/)\.env(\.|$)|\.(log|bak|backup|dump|zip|gz|7z|tmp|swp)$|\x7e$~i', $relative);
+        $unsafe = preg_match('~(^|/)(dumps?|backups?|uploads|private|node_modules|vendor|\.git)(/|$)|(^|/)\.env(\.|$)|\.(log|bak|backup|dump|zip|gz|7z|tar|rar|tmp|swp|pem|key|p12|pfx|cookie|cookies|session)$|\x7e$~i', $relative);
         $sqlDump = preg_match('/\.sql$/i', $relative) && !str_starts_with($relative, 'database/migrations/');
         if ($file->isLink() || $storageRuntime || $unsafe || $sqlDump) {
             $excluded++;

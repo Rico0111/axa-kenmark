@@ -1,0 +1,9 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Exact nonsecret production template placeholder"
+condition = "AND"
+paths = ['''(^|[/\\])\.env\.production\.example$''']
+regexTarget = "match"
+regexes = ['''^APP_KEY=REPLACE_WITH_UNIQUE_64_CHAR_HEX_KEY\r?$''']
